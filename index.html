@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-        <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5KQ1M4S4RP"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -16,20 +16,30 @@
     <title>⚡ Kalkulator Subnetting IP & Panduan Kelas IPv4</title>
     <style>
         body { font-family: sans-serif; background: #f0f4f8; padding: 20px; color: #2d3748; line-height: 1.6; }
-        .container { max-width: 700px; margin: auto; }
+        .container { max-width: 750px; margin: auto; }
         .box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 25px; }
         input, select, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 11pt; }
         button { background: #3182ce; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button:hover { background: #2b6cb0; }
         .result { margin-top: 15px; padding: 15px; background: #e2e8f0; border-radius: 4px; display: none; font-family: monospace; font-size: 10.5pt; white-space: pre-line; }
         
-        /* Gaya untuk Edukasi Teori */
+        /* Gaya Dekorasi Konten */
         h2 { color: #1a365d; border-left: 4px solid #3182ce; padding-left: 10px; margin-top: 0; }
-        h3 { color: #2c5282; margin-bottom: 5px; }
+        h3 { color: #2c5282; margin-top: 20px; margin-bottom: 5px; }
         table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 10pt; }
         th, td { padding: 10px; text-align: left; border: 1px solid #cbd5e0; }
         th { background-color: #2b6cb0; color: white; }
         tr:nth-child(even) { background-color: #f7fafc; }
+        .formula-box { background: #edf2f7; padding: 15px; border-left: 4px solid #4a5568; font-family: monospace; font-size: 10pt; margin: 10px 0; border-radius: 4px; }
+        footer { text-align: center; margin-top: 40px; padding: 20px; font-size: 9.5pt; color: #718096; border-top: 1px solid #e2e8f0; }
+        footer a { color: #3182ce; text-decoration: none; margin: 0 10px; }
+        footer a:hover { text-decoration: underline; }
+        
+        /* Modal Style untuk Halaman Legalitas */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
+        .modal-content { background: white; margin: 10% auto; padding: 30px; width: 80%; max-width: 600px; border-radius: 8px; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 20pt; cursor: pointer; color: #a0aec0; }
+        .close-btn:hover { color: #4a5568; }
     </style>
 </head>
 <body>
@@ -44,7 +54,7 @@
             <div id="output" class="result"></div>
         </div>
 
-        <!-- SEKSI 2: EDUKASI KELAS IP (UNTUK SEO & USER) -->
+        <!-- SEKSI 2: EDUKASI KELAS IP -->
         <div class="box">
             <h2>📘 Mengenal Kelas-Kelas Alamat IPv4</h2>
             <p>Dalam arsitektur jaringan komputer, alamat IPv4 dibagi menjadi beberapa kelompok kelas untuk mempermudah manajemen alokasi perangkat berdasarkan skala jaringan:</p>
@@ -91,8 +101,94 @@
                 <li><b>Kelas A:</b> Menyediakan sedikit ID jaringan, namun setiap jaringan mampu menampung hingga 16,7 juta perangkat.</li>
                 <li><b>Kelas B:</b> Membagi porsi seimbang antara identitas jaringan dan jumlah perangkat (maksimal 65.534 host per jaringan).</li>
                 <li><b>Kelas C:</b> Kelas yang paling sering ditemui sehari-hari. Sangat efisien untuk jaringan lokal berskala kecil (maksimal 254 host).</li>
-                <li><b>Kelas D:</b> Tidak memiliki segmen host dan tidak digunakan untuk komputer biasa. Kelas ini dirancang khusus untuk transmisi data <i>multicast</i> (seperti video konferensi atau protokol routing).</li>
+                <li><b>Kelas D:</b> Tidak memiliki segmen host, dirancang khusus untuk transmisi data <i>multicast</i> (seperti video konferensi).</li>
             </ul>
+        </div>
+
+        <!-- SEKSI 3: CHEAT SHEET CIDR (PENAMBAHAN BARU UNTUK ADSENSE & USER VALUE) -->
+        <div class="box">
+            <h2>📊 Tabel Cheat Sheet CIDR & Netmask (Kelas C)</h2>
+            <p>Berikut adalah tabel acuan cepat prefiks CIDR yang sering digunakan dalam implementasi Local Area Network (LAN):</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>CIDR</th>
+                        <th>Subnet Mask Sub-Ekuivalen</th>
+                        <th>Total IP</th>
+                        <th>Host Valid (Usable)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><b>/24</b></td><td>255.255.255.0</td><td>256</td><td>254</td></tr>
+                    <tr><td><b>/25</b></td><td>255.255.255.128</td><td>128</td><td>126</td></tr>
+                    <tr><td><b>/26</b></td><td>255.255.255.192</td><td>64</td><td>62</td></tr>
+                    <tr><td><b>/27</b></td><td>255.255.255.224</td><td>32</td><td>30</td></tr>
+                    <tr><td><b>/28</b></td><td>255.255.255.240</td><td>16</td><td>14</td></tr>
+                    <tr><td><b>/29</b></td><td>255.255.255.248</td><td>8</td><td>6</td></tr>
+                    <tr><td><b>/30</b></td><td>255.255.255.252</td><td>4</td><td>2</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SEKSI 4: STUDI KASUS MANUAL (DIPERLUKAN BOT GOOGLE NYA) -->
+        <div class="box">
+            <h2>📝 Panduan Cara Menghitung Subnetting Secara Manual</h2>
+            <p>Bagaimana mesin kalkulator di atas bekerja? Mari kita bedah contoh studi kasus pencarian parameter jaringan menggunakan metode matematika manual.</p>
+            
+            <h3>Studi Kasus: Menghitung IP 192.168.1.10 dengan Prefiks /26</h3>
+            <p>Subnet mask dari <b>/26</b> jika dituliskan dalam bentuk biner adalah 26 angka satu diikuti 6 angka nol: <br><code>11111111.11111111.11111111.11000000</code> atau setara dengan desimal <b>255.255.255.192</b>.</p>
+            
+            <p><b>1. Mencari Jumlah Subnet:</b><br>
+            Rumus: 2<sup>x</sup> (di mana x adalah banyaknya angka biner 1 pada oktet terakhir). <br>
+            Pada oktet ke-4 prefiks /26, terdapat 2 angka satu (<u>11</u>000000). Maka Jumlah Subnet = 2<sup>2</sup> = <b>4 Subnet</b>.</p>
+
+            <p><b>2. Mencari Jumlah Host per Subnet:</b><br>
+            Rumus: 2<sup>y</sup> - 2 (di mana y adalah banyaknya angka biner 0 pada oktet terakhir). <br>
+            Sisa biner kosong adalah 6 angka nol (11<u>000000</u>). Maka Jumlah Host = 2<sup>6</sup> - 2 = 64 - 2 = <b>62 Host Valid</b>.</p>
+
+            <p><b>3. Mencari Blok Subnet & Rentang Alamat:</b><br>
+            Blok didapat dari mengurangi angka maksimal desimal (256) dengan nilai oktet terakhir netmask: 256 - 192 = <b>64</b>. <br>
+            Maka kelipatan blok subnetnya adalah: 0, 64, 128, 192. Karena IP kita 192.168.1.<b>10</b> berada di blok antara 0 - 63, didapatkan hasil:</p>
+            
+            <div class="formula-box">
+                Network ID   : 192.168.1.0<br>
+                Host Pertama : 192.168.1.1<br>
+                Host Terakhir: 192.168.1.62<br>
+                Broadcast ID : 192.168.1.63
+            </div>
+        </div>
+
+        <!-- FOOTER DENGAN LINK LEGALITAS MODAL -->
+        <footer>
+            <p>© 2026 Shakanet6. All rights reserved.</p>
+            <p>
+                <a href="#" onclick="openModal('privacy')">Privacy Policy</a> | 
+                <a href="#" onclick="openModal('terms')">Terms of Service</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- WINDOW MODAL UNTUK PRIVACY POLICY (SYARAT ADSENSE) -->
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('privacy')">&times;</span>
+            <h2>Privacy Policy</h2>
+            <p>Di Shakanet6, kami sangat menjaga privasi pengunjung kami. Kebijakan Privasi ini menjelaskan jenis informasi yang dikumpulkan dan dicatat oleh platform kami.</p>
+            <h3>Log Files & Cookies</h3>
+            <p>Website kalkulator ini berjalan 100% di sisi klien (browser pengguna) dan tidak menyimpan data input IP Anda ke server eksternal apa pun.</p>
+            <p>Namun, kami menggunakan layanan pihak ketiga seperti <b>Google Analytics</b> untuk menganalisis statistik kunjungan web demi pengembangan performa situs, serta <b>Google AdSense</b> untuk penayangan iklan yang relevan sesuai minat Anda.</p>
+        </div>
+    </div>
+
+    <!-- WINDOW MODAL UNTUK TERMS OF SERVICE -->
+    <div id="termsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('terms')">&times;</span>
+            <h2>Terms of Service</h2>
+            <p>Selamat datang di platform Web Tools Shakanet6. Dengan mengakses alat kalkulator subnetting ini, Anda menyetujui ketentuan berikut:</p>
+            <h3>Penggunaan Alat</h3>
+            <p>Alat kalkulator ini disediakan secara gratis untuk kebutuhan pembelajaran, analisis infrastruktur jaringan, dan simulasi teknik praktisi IT.</p>
+            <p>Kami berusaha memberikan hasil kalkulasi seakurat mungkin, namun kami tidak bertanggung jawab atas kesalahan konfigurasi jaringan fisik yang diakibatkan oleh kelalaian pembacaan hasil data.</p>
         </div>
     </div>
 
@@ -138,6 +234,19 @@
             
             const out = document.getElementById('output');
             out.innerHTML = html; out.style.display = 'block';
+        }
+
+        // Fungsi Kendali Jendela Pop-up Modal (Legalitas)
+        function openModal(type) {
+            document.getElementById(type + 'Modal').style.display = 'block';
+        }
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
         }
     </script>
 </body>
