@@ -23,7 +23,7 @@
         button:hover { background: #2b6cb0; }
         .result { margin-top: 15px; padding: 15px; background: #e2e8f0; border-radius: 4px; display: none; font-family: monospace; font-size: 10.5pt; white-space: pre-line; word-break: break-all; }
         
-        /* Navigasi Tab (Sesuai Sketsa User) */
+        /* Navigasi Tab */
         .tab-container { display: flex; border-radius: 8px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 2px solid #2b6cb0; }
         .tab-btn { flex: 1; padding: 15px; text-align: center; background: white; color: #2b6cb0; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 12pt; user-select: none; }
         .tab-btn.active { background: #2b6cb0; color: white; }
@@ -52,7 +52,7 @@
 <body>
     <div class="container">
         
-        <!-- NAVIGASI TAB (Sesuai Konsep Gambar Anda) -->
+        <!-- NAVIGASI TAB -->
         <div class="tab-container">
             <div class="tab-btn active" onclick="switchTab('ipv4', this)">IPv4 Subnetting</div>
             <div class="tab-btn" onclick="switchTab('ipv6', this)">IPv6 Subnetting</div>
@@ -90,11 +90,20 @@
                         <tr><td><b>Kelas D</b></td><td>224 - 239</td><td>Tidak ada</td><td>Komunikasi Multicast (Data Kelompok)</td></tr>
                     </tbody>
                 </table>
+
+                <h3>Penjelasan Singkat:</h3>
+                <ul>
+                    <li><b>Kelas A:</b> Menyediakan sedikit ID jaringan, namun setiap jaringan mampu menampung hingga 16,7 juta perangkat.</li>
+                    <li><b>Kelas B:</b> Membagi porsi seimbang antara identitas jaringan dan jumlah perangkat (maksimal 65.534 host per jaringan).</li>
+                    <li><b>Kelas C:</b> Kelas yang paling sering ditemui sehari-hari. Sangat efisien untuk jaringan lokal berskala kecil (maksimal 254 host).</li>
+                    <li><b>Kelas D:</b> Tidak memiliki segmen host, dirancang khusus untuk transmisi data <i>multicast</i> (seperti video konferensi).</li>
+                </ul>
             </div>
 
             <!-- CHEAT SHEET CIDR -->
             <div class="box">
                 <h2>📊 Tabel Cheat Sheet CIDR & Netmask (Kelas C)</h2>
+                <p>Berikut adalah tabel acuan cepat prefiks CIDR yang sering digunakan dalam implementasi Local Area Network (LAN):</p>
                 <table>
                     <thead>
                         <tr><th>CIDR</th><th>Subnet Mask Ekuivalen</th><th>Total IP</th><th>Host Valid (Usable)</th></tr>
@@ -110,6 +119,34 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- STUDI KASUS MANUAL -->
+            <div class="box">
+                <h2>📝 Panduan Cara Menghitung Subnetting Secara Manual</h2>
+                <p>Bagaimana mesin kalkulator di atas bekerja? Mari kita bedah contoh studi kasus pencarian parameter jaringan menggunakan metode matematika manual.</p>
+                
+                <h3>Studi Kasus: Menghitung IP 192.168.1.10 dengan Prefiks /26</h3>
+                <p>Subnet mask dari <b>/26</b> jika dituliskan dalam bentuk biner adalah 26 angka satu diikuti 6 angka nol: <br><code>11111111.11111111.11111111.11000000</code> atau setara dengan desimal <b>255.255.255.192</b>.</p>
+                
+                <p><b>1. Mencari Jumlah Subnet:</b><br>
+                Rumus: 2<sup>x</sup> (di mana x adalah banyaknya angka biner 1 pada oktet terakhir). <br>
+                Pada oktet ke-4 prefiks /26, terdapat 2 angka satu (<u>11</u>000000). Maka Jumlah Subnet = 2<sup>2</sup> = <b>4 Subnet</b>.</p>
+
+                <p><b>2. Mencari Jumlah Host per Subnet:</b><br>
+                Rumus: 2<sup>y</sup> - 2 (di mana y adalah banyaknya angka biner 0 pada oktet terakhir). <br>
+                Sisa biner kosong adalah 6 angka nol (11<u>000000</u>). Maka Jumlah Host = 2<sup>6</sup> - 2 = 64 - 2 = <b>62 Host Valid</b>.</p>
+
+                <p><b>3. Mencari Blok Subnet & Rentang Alamat:</b><br>
+                Blok didapat dariBox mengurangi angka maksimal desimal (256) dengan nilai oktet terakhir netmask: 256 - 192 = <b>64</b>. <br>
+                Maka kelipatan blok subnetnya adalah: 0, 64, 128, 192. Karena IP kita 192.168.1.<b>10</b> berada di blok antara 0 - 63, didapatkan hasil:</p>
+                
+                <div class="formula-box">
+                    Network ID   : 192.168.1.0<br>
+                    Host Pertama : 192.168.1.1<br>
+                    Host Terakhir: 192.168.1.62<br>
+                    Broadcast ID : 192.168.1.63
+                </div>
+            </div>
         </div>
 
         <!-- ==================== KONTEN 2: HALAMAN IPV6 ==================== -->
@@ -124,7 +161,7 @@
                 <div id="output-ipv6" class="result"></div>
             </div>
 
-            <!-- EDUKASI IPV6 (PENTING BAGI ADSENSE) -->
+            <!-- EDUKASI IPV6 -->
             <div class="box">
                 <h2>📘 Mengenal Alokasi & Struktur Alamat IPv6</h2>
                 <p>Alamat IPv6 berukuran <b>128-bit</b> (4 kali lipat dari IPv4) dan ditulis menggunakan format heksadesimal yang dibagi menjadi 8 kelompok blok (disebut *hextet*) dipisahkan dengan tanda titik dua (:).</p>
@@ -163,14 +200,14 @@
         }
 
         const selectV6 = document.getElementById('ipv6-prefix');
-        for(let i=4; i<=128; i+=4) { // Kelipatan 4 paling umum untuk alokasi hex boundary
+        for(let i=4; i<=128; i+=4) {
             let opt = document.createElement('option');
             opt.value = i; opt.innerText = '/' + i;
             if(i === 64) opt.selected = true;
             selectV6.appendChild(opt);
         }
 
-        // --- 2. LOGIKA NAVIGASI TAB (Sesuai Request Coretan) ---
+        // --- 2. LOGIKA NAVIGASI TAB ---
         function switchTab(target, btnElement) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -206,28 +243,45 @@
             document.getElementById('output').style.display = 'block';
         }
 
-        // --- 4. LOGIKA ANALISIS PARSER IPV6 (Sisi Klien Ringan) ---
+        // --- 4. LOGIKA ANALISIS PARSER IPV6 (VERSI UPGRADE FORMAT MATCH IPV4) ---
         function calculateIPv6() {
             const ipv6Str = document.getElementById('ipv6').value.trim();
             const prefix = parseInt(document.getElementById('ipv6-prefix').value);
             
-            // Validasi Dasar Karakter IPv6
             if(!ipv6Str.includes(':') || ipv6Str.length < 3) {
                 alert('Format IPv6 tidak valid!'); return;
             }
             
-            // Logika representasi matematis jumlah subnetting eksponensial IPv6
+            // Cari bagian base prefix sebelum tanda ganda koloni (::)
+            let segments = ipv6Str.split('::')[0].split(':');
+            let filledSegments = [];
+            
+            // Melakukan normalisasi tampilan visual segment hex
+            for(let i=0; i<4; i++) {
+                if(segments[i]) {
+                    filledSegments.push(segments[i]);
+                } else {
+                    filledSegments.push('0000');
+                }
+            }
+            
+            let basePrefix = filledSegments.slice(0, Math.ceil(prefix / 16)).join(':');
+            if(prefix <= 16) basePrefix = filledSegments[0];
+            if(!basePrefix) basePrefix = "2001:db8";
+
             let totalSubnetsAvailable = "";
             if (prefix <= 64) {
-                totalSubnetsAvailable = Math.pow(2, 64 - prefix).toLocaleString('id-ID');
+                totalSubnetsAvailable = Math.pow(2, 64 - prefix).toLocaleString('id-ID') + " Blok Subnet /64";
             } else {
-                totalSubnetsAvailable = "Alokasi khusus host / LAN segment";
+                totalSubnetsAvailable = "Alokasi internal (Interface Identifier)";
             }
 
-            document.getElementById('output-ipv6').innerHTML = `<b>Alokasi Jenis:</b> Global Unicast / Interface ID Segment
-<b>Prefix Length:</b> /${prefix}
-<b>Jumlah Blok /64 Subnet yang Didapat:</b> ${prefix <= 64 ? totalSubnetsAvailable + " Subnet" : "N/A"}
-<b>Jumlah Kemungkinan Host Alokasi:</b> 2<sup>${128 - prefix}</sup> kombinasi alamat unik.`;
+            // Tampilkan output terstruktur rapi menyerupai parameter output IPv4
+            document.getElementById('output-ipv6').innerHTML = `<b>Prefix Length:</b> /${prefix}
+<b>Network ID (Prefix Base):</b> ${basePrefix}::/${prefix}
+<b>Rentang IP Host Valid:</b> ${basePrefix}::0000 - ${basePrefix}:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+<b>Alokasi Blok Jaringan:</b> ${totalSubnetsAvailable}
+<b>Jumlah Kemungkinan Host:</b> 2<sup>${128 - prefix}</sup> kombinasi alamat unik`;
             document.getElementById('output-ipv6').style.display = 'block';
         }
 
