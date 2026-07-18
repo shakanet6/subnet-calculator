@@ -126,25 +126,46 @@
                 <p>Bagaimana mesin kalkulator di atas bekerja? Mari kita bedah contoh studi kasus pencarian parameter jaringan menggunakan metode matematika manual.</p>
                 
                 <h3>Studi Kasus: Menghitung IP 192.168.1.10 dengan Prefiks /26</h3>
-                <p>Subnet mask dari <b>/26</b> jika dituliskan dalam bentuk biner adalah 26 angka satu diikuti 6 angka nol: <br><code>11111111.11111111.11111111.11000000</code> atau setara dengan desimal <b>255.255.255.192</b>.</p>
+                <p>Prefiks <b>/26</b> berarti ada 26 angka biner satu (1) berurutan, dan sisanya nol (0) hingga total memenuhi batas susunan 32 bit. Jika dituliskan dalam bentuk biner lengkap menjadi:</p>
+                <code style="display:block; background:#edf2f7; padding:10px; border-radius:4px; margin-bottom:10px; font-family:monospace;">11111111.11111111.11111111.11000000</code>
+
+                <p><b>Dari mana datangnya angka desimal 255.255.255.192?</b><br>
+                Setiap kelompok 8 bit (oktet) dihitung menggunakan konversi biner-ke-desimal berdasarkan posisi bobot bitnya (128, 64, 32, 16, 8, 4, 2, 1) dari kiri ke kanan:</p>
+                
+                <table style="margin-top:5px; margin-bottom:15px;">
+                    <thead>
+                        <tr>
+                            <th>Oktet</th>
+                            <th>Bentuk Biner</th>
+                            <th>Proses Hitung Desimal</th>
+                            <th>Hasil Desimal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Oktet 1</td><td>11111111</td><td>128 + 64 + 32 + 16 + 8 + 4 + 2 + 1</td><td><b>255</b></td></tr>
+                        <tr><td>Oktet 2</td><td>11111111</td><td>128 + 64 + 32 + 16 + 8 + 4 + 2 + 1</td><td><b>255</b></td></tr>
+                        <tr><td>Oktet 3</td><td>11111111</td><td>128 + 64 + 32 + 16 + 8 + 4 + 2 + 1</td><td><b>255</b></td></tr>
+                        <tr><td>Oktet 4</td><td><u>11</u>000000</td><td>128 + 64 + 0 + 0 + 0 + 0 + 0 + 0</td><td><b>192</b></td></tr>
+                    </tbody>
+                </table>
                 
                 <p><b>1. Mencari Jumlah Subnet:</b><br>
                 Rumus: 2<sup>x</sup> (di mana x adalah banyaknya angka biner 1 pada oktet terakhir). <br>
-                Pada oktet ke-4 prefiks /26, terdapat 2 angka satu (<u>11</u>000000). Maka Jumlah Subnet = 2<sup>2</sup> = <b>4 Subnet</b>.</p>
+                Pada oktet ke-4 prefiks /26, terdapat 2 angka satu (<u>11</u>000000). Maka Jumlah Subnet = 2<sup>2</sup> = <b>4 Subnet</b> (Artinya satu segmen jaringan besar dipecah menjadi 4 blok subnet mandiri).</p>
 
                 <p><b>2. Mencari Jumlah Host per Subnet:</b><br>
                 Rumus: 2<sup>y</sup> - 2 (di mana y adalah banyaknya angka biner 0 pada oktet terakhir). <br>
-                Sisa biner kosong adalah 6 angka nol (11<u>000000</u>). Maka Jumlah Host = 2<sup>6</sup> - 2 = 64 - 2 = <b>62 Host Valid</b>.</p>
+                Sisa biner kosong pada oktet terakhir adalah 6 angka nol (11<u>000000</u>). Maka Jumlah Host = 2<sup>6</sup> - 2 = 64 - 2 = <b>62 Host Valid</b> yang siap dialokasikan ke perangkat.</p>
 
                 <p><b>3. Mencari Blok Subnet & Rentang Alamat:</b><br>
-                Blok didapat dariBox mengurangi angka maksimal desimal (256) dengan nilai oktet terakhir netmask: 256 - 192 = <b>64</b>. <br>
-                Maka kelipatan blok subnetnya adalah: 0, 64, 128, 192. Karena IP kita 192.168.1.<b>10</b> berada di blok antara 0 - 63, didapatkan hasil:</p>
+                Blok didapat dari mengurangi angka maksimal desimal per oktet (256) dengan nilai oktet terakhir netmask: 256 - 192 = <b>64</b>. <br>
+                Maka kelipatan blok subnetnya adalah: 0, 64, 128, 192. Karena IP kita 192.168.1.<b>10</b> berada di blok pertama (antara rentang 0 sampai 63), didapatkan hasil parameter jaringan:</p>
                 
                 <div class="formula-box">
-                    Network ID   : 192.168.1.0<br>
-                    Host Pertama : 192.168.1.1<br>
-                    Host Terakhir: 192.168.1.62<br>
-                    Broadcast ID : 192.168.1.63
+                    Network ID   : 192.168.1.0 (Alamat identitas subnet)<br>
+                    Host Pertama : 192.168.1.1 (IP pertama yang bisa dipakai perangkat)<br>
+                    Host Terakhir: 192.168.1.62 (IP terakhir yang bisa dipakai perangkat)<br>
+                    Broadcast ID : 192.168.1.63 (Alamat pengiriman data massal)
                 </div>
             </div>
         </div>
