@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Kalkulator Subnetting IP & Panduan Kelas IPv4</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f4f8; padding: 20px; color: #2d3748; line-height: 1.6; }
+        .container { max-width: 700px; margin: auto; }
+        .box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 25px; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 11pt; }
+        button { background: #3182ce; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #2b6cb0; }
+        .result { margin-top: 15px; padding: 15px; background: #e2e8f0; border-radius: 4px; display: none; font-family: monospace; font-size: 10.5pt; white-space: pre-line; }
+        
+        /* Gaya untuk Edukasi Teori */
+        h2 { color: #1a365d; border-left: 4px solid #3182ce; padding-left: 10px; margin-top: 0; }
+        h3 { color: #2c5282; margin-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 10pt; }
+        th, td { padding: 10px; text-align: left; border: 1px solid #cbd5e0; }
+        th { background-color: #2b6cb0; color: white; }
+        tr:nth-child(even) { background-color: #f7fafc; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- SEKSI 1: KALKULATOR SUBNET -->
+        <div class="box">
+            <h2>⚡ Quick Subnet Calculator</h2>
+            <p style="font-size: 9.5pt; color: #718096; margin-top: -5px;">Hitung Network ID, Netmask, Jangkauan IP, dan Jumlah Host secara instan.</p>
+            <input type="text" id="ip" placeholder="Contoh: 192.168.1.10" value="192.168.1.10">
+            <select id="cidr"></select>
+            <button onclick="calculateSubnet()">Hitung Subnet</button>
+            <div id="output" class="result"></div>
+        </div>
+
+        <!-- SEKSI 2: EDUKASI KELAS IP (UNTUK SEO & USER) -->
+        <div class="box">
+            <h2>📘 Mengenal Kelas-Kelas Alamat IPv4</h2>
+            <p>Dalam arsitektur jaringan komputer, alamat IPv4 dibagi menjadi beberapa kelompok kelas untuk mempermudah manajemen alokasi perangkat berdasarkan skala jaringan:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kelas</th>
+                        <th>Oktet Pertama</th>
+                        <th>Default Netmask</th>
+                        <th>Kegunaan Utama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Kelas A</b></td>
+                        <td>1 - 126</td>
+                        <td>/8 (255.0.0.0)</td>
+                        <td>Jaringan Skala Raksasa (Jutaan Host)</td>
+                    </tr>
+                    <tr>
+                        <td><b>Kelas B</b></td>
+                        <td>128 - 191</td>
+                        <td>/16 (255.255.0.0)</td>
+                        <td>Perusahaan Menengah - Besar</td>
+                    </tr>
+                    <tr>
+                        <td><b>Kelas C</b></td>
+                        <td>192 - 223</td>
+                        <td>/24 (255.255.255.0)</td>
+                        <td>Jaringan Lokal, Rumah, & UMKM</td>
+                    </tr>
+                    <tr>
+                        <td><b>Kelas D</b></td>
+                        <td>224 - 239</td>
+                        <td>Tidak ada</td>
+                        <td>Komunikasi Multicast (Data Kelompok)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Penjelasan Singkat:</h3>
+            <ul>
+                <li><b>Kelas A:</b> Menyediakan sedikit ID jaringan, namun setiap jaringan mampu menampung hingga 16,7 juta perangkat.</li>
+                <li><b>Kelas B:</b> Membagi porsi seimbang antara identitas jaringan dan jumlah perangkat (maksimal 65.534 host per jaringan).</li>
+                <li><b>Kelas C:</b> Kelas yang paling sering ditemui sehari-hari. Sangat efisien untuk jaringan lokal berskala kecil (maksimal 254 host).</li>
+                <li><b>Kelas D:</b> Tidak memiliki segmen host dan tidak digunakan untuk komputer biasa. Kelas ini dirancang khusus untuk transmisi data <i>multicast</i> (seperti video konferensi atau protokol routing).</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Membuat pilihan CIDR otomatis /8 sampai /32
+        const select = document.getElementById('cidr');
+        for(let i=8; i<=32; i++) {
+            let opt = document.createElement('option');
+            opt.value = i; opt.innerText = '/' + i;
+            if(i === 24) opt.selected = true;
+            select.appendChild(opt);
+        }
+
+        // Logika Perhitungan Subnet
+        function calculateSubnet() {
+            const ipStr = document.getElementById('ip').value.trim();
+            const cidr = parseInt(document.getElementById('cidr').value);
+            const ipParts = ipStr.split('.').map(Number);
+            
+            if(ipParts.length !== 4 || ipParts.some(isNaN || (p => p < 0 || p > 255))) {
+                alert('Format IPv4 tidak valid!'); return;
+            }
+
+            const ipNum = (ipParts[0] << 24) | (ipParts[1] << 16) | (ipParts[2] << 8) | ipParts[3];
+            const mask = cidr === 0 ? 0 : (~0 << (32 - cidr));
+            
+            const netNum = ipNum & mask;
+            const broadNum = netNum | ~mask;
+
+            const toIPStr = (num) => [
+                (num >>> 24) & 255, (num >>> 16) & 255,
+                (num >>> 8) & 255, num & 255
+            ].join('.');
+
+            const totalHosts = Math.pow(2, 32 - cidr);
+            const usableHosts = totalHosts > 2 ? totalHosts - 2 : 0;
+
+            let html = `<b>Subnet Mask:</b> ${toIPStr(mask)}
+                        <b>Network ID:</b> ${toIPStr(netNum)}
+                        <b>Broadcast ID:</b> ${toIPStr(broadNum)}
+                        <b>Rentang IP Host Valid:</b> ${toIPStr(netNum+1)} - ${toIPStr(broadNum-1)}
+                        <b>Jumlah Host Maksimal:</b> ${usableHosts} perangkat`;
+            
+            const out = document.getElementById('output');
+            out.innerHTML = html; out.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
