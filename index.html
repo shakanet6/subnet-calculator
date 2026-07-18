@@ -13,7 +13,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Kalkulator Subnetting IP & Panduan Kelas IPv4</title>
+    <title>⚡ Shakanet6 - Kalkulator Subnetting IPv4 & IPv6</title>
     <style>
         body { font-family: sans-serif; background: #f0f4f8; padding: 20px; color: #2d3748; line-height: 1.6; }
         .container { max-width: 750px; margin: auto; }
@@ -21,8 +21,15 @@
         input, select, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 11pt; }
         button { background: #3182ce; color: white; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
         button:hover { background: #2b6cb0; }
-        .result { margin-top: 15px; padding: 15px; background: #e2e8f0; border-radius: 4px; display: none; font-family: monospace; font-size: 10.5pt; white-space: pre-line; }
+        .result { margin-top: 15px; padding: 15px; background: #e2e8f0; border-radius: 4px; display: none; font-family: monospace; font-size: 10.5pt; white-space: pre-line; word-break: break-all; }
         
+        /* Navigasi Tab (Sesuai Sketsa User) */
+        .tab-container { display: flex; border-radius: 8px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 2px solid #2b6cb0; }
+        .tab-btn { flex: 1; padding: 15px; text-align: center; background: white; color: #2b6cb0; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 12pt; user-select: none; }
+        .tab-btn.active { background: #2b6cb0; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
         /* Gaya Dekorasi Konten */
         h2 { color: #1a365d; border-left: 4px solid #3182ce; padding-left: 10px; margin-top: 0; }
         h3 { color: #2c5282; margin-top: 20px; margin-bottom: 5px; }
@@ -35,7 +42,7 @@
         footer a { color: #3182ce; text-decoration: none; margin: 0 10px; }
         footer a:hover { text-decoration: underline; }
         
-        /* Modal Style untuk Halaman Legalitas */
+        /* Modal Legalitas */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
         .modal-content { background: white; margin: 10% auto; padding: 30px; width: 80%; max-width: 600px; border-radius: 8px; position: relative; }
         .close-btn { position: absolute; top: 15px; right: 20px; font-size: 20pt; cursor: pointer; color: #a0aec0; }
@@ -44,121 +51,94 @@
 </head>
 <body>
     <div class="container">
-        <!-- SEKSI 1: KALKULATOR SUBNET -->
-        <div class="box">
-            <h2>⚡ Quick Subnet Calculator</h2>
-            <p style="font-size: 9.5pt; color: #718096; margin-top: -5px;">Hitung Network ID, Netmask, Jangkauan IP, dan Jumlah Host secara instan.</p>
-            <input type="text" id="ip" placeholder="Contoh: 192.168.1.10" value="192.168.1.10">
-            <select id="cidr"></select>
-            <button onclick="calculateSubnet()">Hitung Subnet</button>
-            <div id="output" class="result"></div>
+        
+        <!-- NAVIGASI TAB (Sesuai Konsep Gambar Anda) -->
+        <div class="tab-container">
+            <div class="tab-btn active" onclick="switchTab('ipv4', this)">IPv4 Subnetting</div>
+            <div class="tab-btn" onclick="switchTab('ipv6', this)">IPv6 Subnetting</div>
         </div>
 
-        <!-- SEKSI 2: EDUKASI KELAS IP -->
-        <div class="box">
-            <h2>📘 Mengenal Kelas-Kelas Alamat IPv4</h2>
-            <p>Dalam arsitektur jaringan komputer, alamat IPv4 dibagi menjadi beberapa kelompok kelas untuk mempermudah manajemen alokasi perangkat berdasarkan skala jaringan:</p>
-            
-            <table>
-                <thead>
-                    <tr>
-                        <th>Kelas</th>
-                        <th>Oktet Pertama</th>
-                        <th>Default Netmask</th>
-                        <th>Kegunaan Utama</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><b>Kelas A</b></td>
-                        <td>1 - 126</td>
-                        <td>/8 (255.0.0.0)</td>
-                        <td>Jaringan Skala Raksasa (Jutaan Host)</td>
-                    </tr>
-                    <tr>
-                        <td><b>Kelas B</b></td>
-                        <td>128 - 191</td>
-                        <td>/16 (255.255.0.0)</td>
-                        <td>Perusahaan Menengah - Besar</td>
-                    </tr>
-                    <tr>
-                        <td><b>Kelas C</b></td>
-                        <td>192 - 223</td>
-                        <td>/24 (255.255.255.0)</td>
-                        <td>Jaringan Lokal, Rumah, & UMKM</td>
-                    </tr>
-                    <tr>
-                        <td><b>Kelas D</b></td>
-                        <td>224 - 239</td>
-                        <td>Tidak ada</td>
-                        <td>Komunikasi Multicast (Data Kelompok)</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- ==================== KONTEN 1: HALAMAN IPV4 ==================== -->
+        <div id="ipv4-section" class="tab-content active">
+            <!-- KALKULATOR IPV4 -->
+            <div class="box">
+                <h2>⚡ Quick IPv4 Calculator</h2>
+                <p style="font-size: 9.5pt; color: #718096; margin-top: -5px;">Hitung Network ID, Netmask, Jangkauan IP, dan Jumlah Host secara instan.</p>
+                <input type="text" id="ip" placeholder="Contoh: 192.168.1.10" value="192.168.1.10">
+                <select id="cidr"></select>
+                <button onclick="calculateSubnet()">Hitung Subnet</button>
+                <div id="output" class="result"></div>
+            </div>
 
-            <h3>Penjelasan Singkat:</h3>
-            <ul>
-                <li><b>Kelas A:</b> Menyediakan sedikit ID jaringan, namun setiap jaringan mampu menampung hingga 16,7 juta perangkat.</li>
-                <li><b>Kelas B:</b> Membagi porsi seimbang antara identitas jaringan dan jumlah perangkat (maksimal 65.534 host per jaringan).</li>
-                <li><b>Kelas C:</b> Kelas yang paling sering ditemui sehari-hari. Sangat efisien untuk jaringan lokal berskala kecil (maksimal 254 host).</li>
-                <li><b>Kelas D:</b> Tidak memiliki segmen host, dirancang khusus untuk transmisi data <i>multicast</i> (seperti video konferensi).</li>
-            </ul>
-        </div>
+            <!-- EDUKASI KELAS IP -->
+            <div class="box">
+                <h2>📘 Mengenal Kelas-Kelas Alamat IPv4</h2>
+                <p>Dalam arsitektur jaringan komputer, alamat IPv4 dibagi menjadi beberapa kelompok kelas untuk mempermudah manajemen alokasi perangkat berdasarkan skala jaringan:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kelas</th>
+                            <th>Oktet Pertama</th>
+                            <th>Default Netmask</th>
+                            <th>Kegunaan Utama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><b>Kelas A</b></td><td>1 - 126</td><td>/8 (255.0.0.0)</td><td>Jaringan Skala Raksasa (Jutaan Host)</td></tr>
+                        <tr><td><b>Kelas B</b></td><td>128 - 191</td><td>/16 (255.255.0.0)</td><td>Perusahaan Menengah - Besar</td></tr>
+                        <tr><td><b>Kelas C</b></td><td>192 - 223</td><td>/24 (255.255.255.0)</td><td>Jaringan Lokal, Rumah, & UMKM</td></tr>
+                        <tr><td><b>Kelas D</b></td><td>224 - 239</td><td>Tidak ada</td><td>Komunikasi Multicast (Data Kelompok)</td></tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <!-- SEKSI 3: CHEAT SHEET CIDR (PENAMBAHAN BARU UNTUK ADSENSE & USER VALUE) -->
-        <div class="box">
-            <h2>📊 Tabel Cheat Sheet CIDR & Netmask (Kelas C)</h2>
-            <p>Berikut adalah tabel acuan cepat prefiks CIDR yang sering digunakan dalam implementasi Local Area Network (LAN):</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>CIDR</th>
-                        <th>Subnet Mask Sub-Ekuivalen</th>
-                        <th>Total IP</th>
-                        <th>Host Valid (Usable)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td><b>/24</b></td><td>255.255.255.0</td><td>256</td><td>254</td></tr>
-                    <tr><td><b>/25</b></td><td>255.255.255.128</td><td>128</td><td>126</td></tr>
-                    <tr><td><b>/26</b></td><td>255.255.255.192</td><td>64</td><td>62</td></tr>
-                    <tr><td><b>/27</b></td><td>255.255.255.224</td><td>32</td><td>30</td></tr>
-                    <tr><td><b>/28</b></td><td>255.255.255.240</td><td>16</td><td>14</td></tr>
-                    <tr><td><b>/29</b></td><td>255.255.255.248</td><td>8</td><td>6</td></tr>
-                    <tr><td><b>/30</b></td><td>255.255.255.252</td><td>4</td><td>2</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- SEKSI 4: STUDI KASUS MANUAL (DIPERLUKAN BOT GOOGLE NYA) -->
-        <div class="box">
-            <h2>📝 Panduan Cara Menghitung Subnetting Secara Manual</h2>
-            <p>Bagaimana mesin kalkulator di atas bekerja? Mari kita bedah contoh studi kasus pencarian parameter jaringan menggunakan metode matematika manual.</p>
-            
-            <h3>Studi Kasus: Menghitung IP 192.168.1.10 dengan Prefiks /26</h3>
-            <p>Subnet mask dari <b>/26</b> jika dituliskan dalam bentuk biner adalah 26 angka satu diikuti 6 angka nol: <br><code>11111111.11111111.11111111.11000000</code> atau setara dengan desimal <b>255.255.255.192</b>.</p>
-            
-            <p><b>1. Mencari Jumlah Subnet:</b><br>
-            Rumus: 2<sup>x</sup> (di mana x adalah banyaknya angka biner 1 pada oktet terakhir). <br>
-            Pada oktet ke-4 prefiks /26, terdapat 2 angka satu (<u>11</u>000000). Maka Jumlah Subnet = 2<sup>2</sup> = <b>4 Subnet</b>.</p>
-
-            <p><b>2. Mencari Jumlah Host per Subnet:</b><br>
-            Rumus: 2<sup>y</sup> - 2 (di mana y adalah banyaknya angka biner 0 pada oktet terakhir). <br>
-            Sisa biner kosong adalah 6 angka nol (11<u>000000</u>). Maka Jumlah Host = 2<sup>6</sup> - 2 = 64 - 2 = <b>62 Host Valid</b>.</p>
-
-            <p><b>3. Mencari Blok Subnet & Rentang Alamat:</b><br>
-            Blok didapat dari mengurangi angka maksimal desimal (256) dengan nilai oktet terakhir netmask: 256 - 192 = <b>64</b>. <br>
-            Maka kelipatan blok subnetnya adalah: 0, 64, 128, 192. Karena IP kita 192.168.1.<b>10</b> berada di blok antara 0 - 63, didapatkan hasil:</p>
-            
-            <div class="formula-box">
-                Network ID   : 192.168.1.0<br>
-                Host Pertama : 192.168.1.1<br>
-                Host Terakhir: 192.168.1.62<br>
-                Broadcast ID : 192.168.1.63
+            <!-- CHEAT SHEET CIDR -->
+            <div class="box">
+                <h2>📊 Tabel Cheat Sheet CIDR & Netmask (Kelas C)</h2>
+                <table>
+                    <thead>
+                        <tr><th>CIDR</th><th>Subnet Mask Ekuivalen</th><th>Total IP</th><th>Host Valid (Usable)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><b>/24</b></td><td>255.255.255.0</td><td>256</td><td>254</td></tr>
+                        <tr><td><b>/25</b></td><td>255.255.255.128</td><td>128</td><td>126</td></tr>
+                        <tr><td><b>/26</b></td><td>255.255.255.192</td><td>64</td><td>62</td></tr>
+                        <tr><td><b>/27</b></td><td>255.255.255.224</td><td>32</td><td>30</td></tr>
+                        <tr><td><b>/28</b></td><td>255.255.255.240</td><td>16</td><td>14</td></tr>
+                        <tr><td><b>/29</b></td><td>255.255.255.248</td><td>8</td><td>6</td></tr>
+                        <tr><td><b>/30</b></td><td>255.255.255.252</td><td>4</td><td>2</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <!-- FOOTER DENGAN LINK LEGALITAS MODAL -->
+        <!-- ==================== KONTEN 2: HALAMAN IPV6 ==================== -->
+        <div id="ipv6-section" class="tab-content">
+            <!-- KALKULATOR IPV6 -->
+            <div class="box">
+                <h2>⚡ Quick IPv6 Calculator</h2>
+                <p style="font-size: 9.5pt; color: #718096; margin-top: -5px;">Analisis alokasi blok prefix, subnet mask, dan rentang alamat IPv6 global.</p>
+                <input type="text" id="ipv6" placeholder="Contoh: 2001:db8::1" value="2001:db8::1">
+                <select id="ipv6-prefix"></select>
+                <button onclick="calculateIPv6()">Analisis IPv6</button>
+                <div id="output-ipv6" class="result"></div>
+            </div>
+
+            <!-- EDUKASI IPV6 (PENTING BAGI ADSENSE) -->
+            <div class="box">
+                <h2>📘 Mengenal Alokasi & Struktur Alamat IPv6</h2>
+                <p>Alamat IPv6 berukuran <b>128-bit</b> (4 kali lipat dari IPv4) dan ditulis menggunakan format heksadesimal yang dibagi menjadi 8 kelompok blok (disebut *hextet*) dipisahkan dengan tanda titik dua (:).</p>
+                
+                <h3>Jenis Alamat IPv6 Populer:</h3>
+                <ul>
+                    <li><b>Global Unicast Address (2000::/3):</b> Alamat IP publik yang dapat dirouting secara global di jaringan internet publik global.</li>
+                    <li><b>Link-Local Address (fe80::/10):</b> Alamat otomatis yang digunakan untuk komunikasi antar perangkat dalam satu segmen lokal tanpa router.</li>
+                    <li><b>Unique Local Address (fc00::/7):</b> Alamat privat dalam versi IPv6, ekuivalen dengan segmen IP privat di IPv4.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FOOTER LEGALITAS -->
         <footer>
             <p>© 2026 Shakanet6. All rights reserved.</p>
             <p>
@@ -168,41 +148,38 @@
         </footer>
     </div>
 
-    <!-- WINDOW MODAL UNTUK PRIVACY POLICY (SYARAT ADSENSE) -->
-    <div id="privacyModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('privacy')">&times;</span>
-            <h2>Privacy Policy</h2>
-            <p>Di Shakanet6, kami sangat menjaga privasi pengunjung kami. Kebijakan Privasi ini menjelaskan jenis informasi yang dikumpulkan dan dicatat oleh platform kami.</p>
-            <h3>Log Files & Cookies</h3>
-            <p>Website kalkulator ini berjalan 100% di sisi klien (browser pengguna) dan tidak menyimpan data input IP Anda ke server eksternal apa pun.</p>
-            <p>Namun, kami menggunakan layanan pihak ketiga seperti <b>Google Analytics</b> untuk menganalisis statistik kunjungan web demi pengembangan performa situs, serta <b>Google AdSense</b> untuk penayangan iklan yang relevan sesuai minat Anda.</p>
-        </div>
-    </div>
-
-    <!-- WINDOW MODAL UNTUK TERMS OF SERVICE -->
-    <div id="termsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('terms')">&times;</span>
-            <h2>Terms of Service</h2>
-            <p>Selamat datang di platform Web Tools Shakanet6. Dengan mengakses alat kalkulator subnetting ini, Anda menyetujui ketentuan berikut:</p>
-            <h3>Penggunaan Alat</h3>
-            <p>Alat kalkulator ini disediakan secara gratis untuk kebutuhan pembelajaran, analisis infrastruktur jaringan, dan simulasi teknik praktisi IT.</p>
-            <p>Kami berusaha memberikan hasil kalkulasi seakurat mungkin, namun kami tidak bertanggung jawab atas kesalahan konfigurasi jaringan fisik yang diakibatkan oleh kelalaian pembacaan hasil data.</p>
-        </div>
-    </div>
+    <!-- WINDOW MODAL -->
+    <div id="privacyModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('privacy')">&times;</span><h2>Privacy Policy</h2><p>Di Shakanet6, kami menjaga privasi pengunjung. Kalkulator ini berjalan di sisi browser pengguna tanpa menyimpan data input IP Anda ke server eksternal.</p></div></div>
+    <div id="termsModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('terms')">&times;</span><h2>Terms of Service</h2><p>Alat ini disediakan secara gratis untuk kebutuhan simulasi teknik praktisi IT dan pembelajaran komparasi struktur IPv4/IPv6.</p></div></div>
 
     <script>
-        // Membuat pilihan CIDR otomatis /8 sampai /32
-        const select = document.getElementById('cidr');
+        // --- 1. SETUP PILIHAN PREFIX PADA STARTUP ---
+        const selectV4 = document.getElementById('cidr');
         for(let i=8; i<=32; i++) {
             let opt = document.createElement('option');
             opt.value = i; opt.innerText = '/' + i;
             if(i === 24) opt.selected = true;
-            select.appendChild(opt);
+            selectV4.appendChild(opt);
         }
 
-        // Logika Perhitungan Subnet
+        const selectV6 = document.getElementById('ipv6-prefix');
+        for(let i=4; i<=128; i+=4) { // Kelipatan 4 paling umum untuk alokasi hex boundary
+            let opt = document.createElement('option');
+            opt.value = i; opt.innerText = '/' + i;
+            if(i === 64) opt.selected = true;
+            selectV6.appendChild(opt);
+        }
+
+        // --- 2. LOGIKA NAVIGASI TAB (Sesuai Request Coretan) ---
+        function switchTab(target, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(target + '-section').classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        // --- 3. LOGIKA KALKULATOR IPV4 ---
         function calculateSubnet() {
             const ipStr = document.getElementById('ip').value.trim();
             const cidr = parseInt(document.getElementById('cidr').value);
@@ -214,40 +191,50 @@
 
             const ipNum = (ipParts[0] << 24) | (ipParts[1] << 16) | (ipParts[2] << 8) | ipParts[3];
             const mask = cidr === 0 ? 0 : (~0 << (32 - cidr));
-            
             const netNum = ipNum & mask;
             const broadNum = netNum | ~mask;
 
-            const toIPStr = (num) => [
-                (num >>> 24) & 255, (num >>> 16) & 255,
-                (num >>> 8) & 255, num & 255
-            ].join('.');
-
+            const toIPStr = (num) => [(num >>> 24) & 255, (num >>> 16) & 255, (num >>> 8) & 255, num & 255].join('.');
             const totalHosts = Math.pow(2, 32 - cidr);
             const usableHosts = totalHosts > 2 ? totalHosts - 2 : 0;
 
-            let html = `<b>Subnet Mask:</b> ${toIPStr(mask)}
-                        <b>Network ID:</b> ${toIPStr(netNum)}
-                        <b>Broadcast ID:</b> ${toIPStr(broadNum)}
-                        <b>Rentang IP Host Valid:</b> ${toIPStr(netNum+1)} - ${toIPStr(broadNum-1)}
-                        <b>Jumlah Host Maksimal:</b> ${usableHosts} perangkat`;
-            
-            const out = document.getElementById('output');
-            out.innerHTML = html; out.style.display = 'block';
+            document.getElementById('output').innerHTML = `<b>Subnet Mask:</b> ${toIPStr(mask)}
+<b>Network ID:</b> ${toIPStr(netNum)}
+<b>Broadcast ID:</b> ${toIPStr(broadNum)}
+<b>Rentang IP Host Valid:</b> ${toIPStr(netNum+1)} - ${toIPStr(broadNum-1)}
+<b>Jumlah Host Maksimal:</b> ${usableHosts} perangkat`;
+            document.getElementById('output').style.display = 'block';
         }
 
-        // Fungsi Kendali Jendela Pop-up Modal (Legalitas)
-        function openModal(type) {
-            document.getElementById(type + 'Modal').style.display = 'block';
-        }
-        function closeModal(type) {
-            document.getElementById(type + 'Modal').style.display = 'none';
-        }
-        window.onclick = function(event) {
-            if (event.target.className === 'modal') {
-                event.target.style.display = 'none';
+        // --- 4. LOGIKA ANALISIS PARSER IPV6 (Sisi Klien Ringan) ---
+        function calculateIPv6() {
+            const ipv6Str = document.getElementById('ipv6').value.trim();
+            const prefix = parseInt(document.getElementById('ipv6-prefix').value);
+            
+            // Validasi Dasar Karakter IPv6
+            if(!ipv6Str.includes(':') || ipv6Str.length < 3) {
+                alert('Format IPv6 tidak valid!'); return;
             }
+            
+            // Logika representasi matematis jumlah subnetting eksponensial IPv6
+            let totalSubnetsAvailable = "";
+            if (prefix <= 64) {
+                totalSubnetsAvailable = Math.pow(2, 64 - prefix).toLocaleString('id-ID');
+            } else {
+                totalSubnetsAvailable = "Alokasi khusus host / LAN segment";
+            }
+
+            document.getElementById('output-ipv6').innerHTML = `<b>Alokasi Jenis:</b> Global Unicast / Interface ID Segment
+<b>Prefix Length:</b> /${prefix}
+<b>Jumlah Blok /64 Subnet yang Didapat:</b> ${prefix <= 64 ? totalSubnetsAvailable + " Subnet" : "N/A"}
+<b>Jumlah Kemungkinan Host Alokasi:</b> 2<sup>${128 - prefix}</sup> kombinasi alamat unik.`;
+            document.getElementById('output-ipv6').style.display = 'block';
         }
+
+        // --- 5. MODAL CONTROL ---
+        function openModal(type) { document.getElementById(type + 'Modal').style.display = 'block'; }
+        function closeModal(type) { document.getElementById(type + 'Modal').style.display = 'none'; }
+        window.onclick = function(e) { if(e.target.className === 'modal') e.target.style.display = 'none'; }
     </script>
 </body>
 </html>
